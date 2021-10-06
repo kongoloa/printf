@@ -1,42 +1,37 @@
 #include "main.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 /**
- * _print_number - prints a number from input
- * @n: The character to print
- * @k: counter through string
- *
- * Return: void
+ * format_d - returns an int to signed decimal
+ * @valist: arguments passed
+ * @buffer: values stored
+ * @index: tracks index position
  */
-void _print_number(int n, int *k)
+void format_d(va_list valist, char *buffer, int *index)
 {
-int y;
+int i, j, numlen;
+char *num_str;
 
-if (n == 0)
+i = va_arg(valist, int);
+
+numlen = num_len(i);
+if (i < 0)
 {
-_putchar((n + '0'), k);
+numlen += 1;
 }
-else if (n < 0)
+num_str = malloc(numlen * sizeof(char));
+if (num_str == NULL)
+return;
+itos(num_str, i);
+for (i = *index, j = 0; j < numlen; *index += 1, i++, j++)
 {
-_putchar(('-'), k);
-for (y = 1000000000; y > 0; y = y / 10)
+if (*index == 1024)
 {
-if (n / y != 0)
-{
-if (n < -214783648)
-_putchar(((((-n / y) % 10) * -1) + '0'), k);
-else
-_putchar((((-n / y) % 10) + '0'), k);
+_write_buffer(buffer, index);
+reset_buffer(buffer);
+*index = 0;
 }
+buffer[*index] = num_str[j];
 }
-}
-else
-{
-for (y = 1000000000; y > 0; y = y / 10)
-{
-if (n / y != 0)
-{
-_putchar(((n / y) % 10 + '0'), k);
-}
-}
-}
+free(num_str);
 }

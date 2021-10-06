@@ -6,65 +6,47 @@
  */
 int _printf(const char *format, ...)
 {
-const char *p;
-unsigned int i;
-int j;
-int k = 0;
-va_list conspec;
-char *s;
+char buffer[1024];
+int i, j = 0, a = 0, *index = &a;
+va_list valist;
+vtype_t spec[] = {
+{'c', format_c}, {'d', format_d}, {'s', format_s}, {'i', format_d},
+{'u', format_u}, {'%', format_perc}, {'x', format_h}, {'X', format_ch},
+{'o', format_o}, {'b', format_b}, {'p', format_p}, {'r', format_r},
+{'R', format_R}, {'\0', NULL}
+};
 if (!format)
-{
 return (-1);
-}
-va_start(conspec, format);
-for (p = format; *p != '\0'; p++)
+va_start(valist, format);
+for (i = 0; format[i] != '\0'; i++)
 {
-if (*p != '%')
+for (; format[i] != '%' && format[i] != '\0'; *index += 1, i++)
 {
-_putchar(*p, &k);
-continue;
-}
-p++;
-switch (*p)
+if (*index == 1024)
 {
-case 'c':
-i = va_arg(conspec, int);
-_putchar(i, &k);
+_write_buffer(buffer, index);
+reset_buffer(buffer);
+*index = 0;
+}
+buffer[*index] = format[i];
+}
+if (format[i] == '\0')
 break;
-case 's':
-s = va_arg(conspec, char *);
-_puts(s, &k);
+if (format[i] == '%')
+{
+i++;
+for (j = 0; spec[j].tp != '\0'; j++)
+{
+if (format[i] == spec[j].tp)
+{
+spec[j].f(valist, buffer, index);
 break;
-case '%':
-_putchar('%', &k);
-break;
-case 'd':
-j = va_arg(conspec, int);
-_print_number(j, &k);
-break;
-case 'i':
-j = va_arg(conspec, int);
-_print_number(j, &k);
-break;
-case 'r':
-s = va_arg(conspec, char *);
-_rev_string(s, &k);
-break;
-case 'b':
-i = va_arg(conspec, int);
-_print_binary(i, &k);
-break;
-case 'R':
-s = va_arg(conspec, char *);
-_rot13(s, &k);
-break;
-case '\0':
-return (-1);
-default:
-_putchar('%', &k);
-_putchar(*p, &k);
 }
 }
-va_end(conspec);
-return (k);
+}
+}
+va_end(valist);
+buffer[*index] = '\0';
+_write_buffer(buffer, index);
+return (*index);
 }

@@ -1,20 +1,20 @@
 #include "main.h"
 
 /**
- * _rev_string - reverses a string
- *@s: char pointer
- *@k: counter through string
- * Return: *s
+ * format_r - reverse a string
+ * @valist: argument passed in
+ * @buffer: values stored
+ * @index: returns pointer to index
  */
-
-void _rev_string(char *s, int *k)
+void format_r(va_list valist, char *buffer, int *index)
 {
-int len = _strlen(s);
-int count = len - 1;
+int i, strlen;
+char *s;
 
-while (count >= 0)
+s = va_arg(valist, char *);
+strlen = _strlen(s) - 1;
+for (i = strlen; i >= 0; i--, *index += 1)
 {
-_putchar(s[count], k);
-count--;
+buffer[*index] = s[i];
 }
 }

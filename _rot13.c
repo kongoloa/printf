@@ -1,28 +1,31 @@
-
 #include "main.h"
 /**
- * _rot13 - encodes a string using rot13
- * @s: string
- * @k: counter through string
- * Return: void
+ * format_R - converts a string into rot13
+ * @valist: argument passed
+ * @buffer: values stored
+ * @index: tracks index position
  */
-void _rot13(char *s, int *k)
+void format_R(va_list valist, char *buffer, int *index)
 {
+char *s;
 int i, j;
-char *letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-char *rot = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
 
-for (i = 0; s[i] != '\0'; i++)
+char *s1 = "abcdefghijklmABCDEFGHIJKLM ,?!;'@-=+\"\\$%^&*()`~<>/:[]{}_|.\n";
+char *s2 = "nopqrstuvwxyzNOPQRSTUVWXYZ ,?!;'@-=+\"\\$%^&*()`~<>/:[]{}_|.\n";
+
+s = va_arg(valist, char *);
+for (i = 0; s[i] != '\0'; i++, *index += 1)
 {
-for (j = 0; letters[j] != '\0'; j++)
+for (j = 0; s1[j] != '\0'; j++)
 {
-if (s[i] == letters[j])
+if (s[i] == s1[j])
 {
-_putchar(rot[j], k);
-break;
+buffer[*index] = s2[j];
+}
+else if (s[i] == s2[j])
+{
+buffer[*index] = s1[j];
 }
 }
-if ((!(s[i] > 96 && s[i] < 123)) && (!(s[i] > 64 && s[i] < 91)))
-_putchar(s[i], k);
 }
 }
